@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #ffffff; padding: 24px 28px 20px; }
+  .label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #718096; margin-bottom: 4px; }
+  .title { font-size: 15px; font-weight: 600; color: #0e1f35; margin-bottom: 2px; }
+  .sub { font-size: 12px; color: #a0aec0; margin-bottom: 20px; }
+  .legend { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #718096; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <div class="label">Demanda · 2026 (prev.)</div>
+  <div class="title">Contribución al crecimiento del PIB</div>
+  <div class="sub">Puntos porcentuales aportados al 2.5% total · BCE</div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#378ADD"></div>Aporte positivo</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#E24B4A"></div>Resta al crecimiento</div>
+  </div>
+  <div style="position:relative;height:260px;">
+    <canvas id="c" role="img" aria-label="Contribución al PIB: Hogares 1.3pp, Exportaciones 1.0pp, FBKF 0.7pp, Gobierno 0.1pp, Importaciones -0.6pp">Hogares 1.3pp, Exportaciones 1.0pp, FBKF 0.7pp, Gobierno 0.1pp, Importaciones -0.6pp</canvas>
+  </div>
+<script>
+const data = [1.3, 1.0, 0.7, 0.1, -0.6];
+new Chart(document.getElementById('c'), {
+  type: 'bar', indexAxis: 'y',
+  data: {
+    labels: ['Hogares','Exportaciones','FBKF','Gobierno','Importaciones'],
+    datasets: [{
+      data,
+      backgroundColor: data.map(v => v < 0 ? '#E24B4A' : '#378ADD'),
+      borderRadius: 5, barPercentage: 0.5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.x + ' pp' } } },
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,0.04)', borderDash: [4,4] }, ticks: { color: '#718096', font: { size: 11 }, callback: v => v + ' pp' } },
+      y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#718096', font: { size: 12, family: 'DM Sans' } } }
+    }
+  }
+});
+</script>
+</body>
+</html>

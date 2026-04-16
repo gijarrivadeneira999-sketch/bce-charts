@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #ffffff; padding: 24px 28px 20px; }
+  .label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #718096; margin-bottom: 4px; }
+  .title { font-size: 15px; font-weight: 600; color: #0e1f35; margin-bottom: 2px; }
+  .sub { font-size: 12px; color: #a0aec0; margin-bottom: 20px; }
+  .legend { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #718096; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <div class="label">VAB por industria · 2026 (prev.)</div>
+  <div class="title">Contribución al crecimiento del PIB por industria</div>
+  <div class="sub">Puntos porcentuales · Banco Central del Ecuador</div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#534AB7"></div>Contribución (pp)</div>
+  </div>
+  <div style="position:relative;height:540px;">
+    <canvas id="c" role="img" aria-label="Contribución al PIB por industria. Comercio 0.38pp, minería 0.31pp, manufactura alimenticia 0.26pp, agricultura 0.24pp, financiero 0.15pp, construcción 0.15pp.">Comercio 0.38pp, minería 0.31pp, manufactura 0.26pp, agricultura 0.24pp, financiero 0.15pp, construcción 0.15pp.</canvas>
+  </div>
+<script>
+const ci = [
+  { l: 'Comercio', v: 0.38 },
+  { l: 'Explotación minera', v: 0.31 },
+  { l: 'Manufactura alimenticia', v: 0.26 },
+  { l: 'Agricultura', v: 0.24 },
+  { l: 'Financiero y seguros', v: 0.15 },
+  { l: 'Construcción', v: 0.15 },
+  { l: 'Manufactura no-alim.', v: 0.11 },
+  { l: 'Act. profesionales', v: 0.11 },
+  { l: 'Transporte', v: 0.11 },
+  { l: 'Admón. pública', v: 0.10 },
+  { l: 'Inmobiliario', v: 0.07 },
+  { l: 'Pesca y acuicultura', v: 0.04 },
+  { l: 'Salud y asistencia', v: 0.04 },
+  { l: 'Electricidad y agua', v: 0.04 },
+  { l: 'Info. y comunicación', v: 0.03 },
+  { l: 'Enseñanza', v: 0.03 },
+  { l: 'Arte y entretenimiento', v: 0.02 },
+  { l: 'Refinados petróleo', v: 0.02 },
+  { l: 'Alojamiento y comidas', v: 0.01 },
+  { l: 'Hogares empleadores', v: 0.002 }
+];
+const stops = ['#3C3489','#3C3489','#534AB7','#534AB7','#7F77DD','#7F77DD','#AFA9EC','#AFA9EC','#AFA9EC','#AFA9EC','#CECBF6','#CECBF6','#CECBF6','#CECBF6','#CECBF6','#CECBF6','#CECBF6','#CECBF6','#CECBF6','#CECBF6'];
+
+new Chart(document.getElementById('c'), {
+  type: 'bar', indexAxis: 'y',
+  data: {
+    labels: ci.map(d => d.l),
+    datasets: [{ data: ci.map(d => d.v), backgroundColor: stops, borderRadius: 4, barPercentage: 0.6 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.x.toFixed(2) + ' pp' } } },
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,0.04)', borderDash: [4,4] }, ticks: { color: '#718096', font: { size: 11 }, callback: v => parseFloat(v.toFixed(2)) + ' pp' } },
+      y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#718096', font: { size: 11 }, autoSkip: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
