@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #fff; padding: 24px 28px 28px; }
+  .label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #718096; margin-bottom: 4px; }
+  .title { font-size: 15px; font-weight: 600; color: #0e1f35; margin-bottom: 2px; }
+  .sub { font-size: 12px; color: #a0aec0; margin-bottom: 32px; }
+  .chart { display: flex; align-items: flex-end; gap: 24px; height: 200px; }
+  .col { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+  .bar { width: 100%; max-width: 90px; border-radius: 5px 5px 0 0; }
+  .val { font-size: 18px; font-weight: 600; margin-top: 10px; }
+  .org { font-size: 12px; font-weight: 600; color: #4a5568; margin-top: 6px; text-align: center; line-height: 1.3; }
+  .date { font-size: 10px; color: #a0aec0; margin-top: 2px; }
+  .baseline { width: 100%; height: 1.5px; background: #e2e8f0; margin-top: 0; }
+  .note { font-size: 10px; color: #a0aec0; margin-top: 16px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="label">Crecimiento del PIB Ecuador · 2026</div>
+  <div class="title">Previsiones de organismos internacionales</div>
+  <div class="sub">Variación anual del PIB real · Porcentaje</div>
+
+  <div class="chart" id="chart"></div>
+  <div class="baseline"></div>
+  <p class="note">* CEPAL: Balance Preliminar dic. 2025 — cifra más reciente disponible &nbsp;·&nbsp; FMI: WEO abr. 2026 &nbsp;·&nbsp; Banco Mundial: Panorama Económico ALC abr. 2026 &nbsp;·&nbsp; BCE: Programación Macroeconómica abr. 2026</p>
+
+<script>
+const data = [
+  { org: 'CEPAL',         date: 'Dic. 2025', v: 2.2, color: '#9FE1CB', valColor: '#0F6E56' },
+  { org: 'FMI',           date: 'Abr. 2026', v: 2.5, color: '#1D9E75', valColor: '#0a4a35' },
+  { org: 'Banco Mundial', date: 'Abr. 2026', v: 2.5, color: '#1D9E75', valColor: '#0a4a35' },
+  { org: 'BCE',           date: 'Abr. 2026', v: 2.5, color: '#0F6E56', valColor: '#0a4a35' },
+];
+
+const MAX = 3.2;
+const CHART_H = 180;
+const container = document.getElementById('chart');
+
+data.forEach(d => {
+  const barH = Math.round((d.v / MAX) * CHART_H);
+  container.innerHTML += `
+    <div class="col">
+      <div class="bar" style="height:${barH}px; background:${d.color};"></div>
+      <div class="val" style="color:${d.valColor};">${d.v.toFixed(1)}%</div>
+      <div class="org">${d.org}</div>
+      <div class="date">${d.date}</div>
+    </div>`;
+});
+</script>
+</body>
+</html>
