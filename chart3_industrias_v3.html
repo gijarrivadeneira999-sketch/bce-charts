@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #fff; padding: 20px 24px; }
+  .label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #718096; margin-bottom: 4px; }
+  .title { font-size: 15px; font-weight: 600; color: #0e1f35; margin-bottom: 2px; }
+  .sub { font-size: 12px; color: #a0aec0; margin-bottom: 12px; }
+  .legend { display: flex; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .leg { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #718096; }
+  .dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .row { display: flex; align-items: center; margin-bottom: 6px; }
+  .sector-label { width: 170px; font-size: 11.5px; color: #4a5568; text-align: right; padding-right: 10px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-wrap { flex: 1; height: 22px; position: relative; }
+  .bar { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .val { position: absolute; left: calc(100% + 5px); top: 50%; transform: translateY(-50%); font-size: 11px; font-weight: 500; white-space: nowrap; }
+</style>
+</head>
+<body>
+  <div class="label">VAB por industria · 2026 (prev.)</div>
+  <div class="title">Tasa de crecimiento por sector — ranking</div>
+  <div class="sub">Variación anual real · Banco Central del Ecuador</div>
+  <div class="legend">
+    <div class="leg"><div class="dot" style="background:#0F6E56"></div>Alto dinamismo (≥ 3.5%)</div>
+    <div class="leg"><div class="dot" style="background:#1D9E75"></div>Dinamismo medio (2%–3.4%)</div>
+    <div class="leg"><div class="dot" style="background:#5DCAA5"></div>Bajo dinamismo (1%–1.9%)</div>
+    <div class="leg"><div class="dot" style="background:#C8EDE4"></div>Rezagado (< 1%)</div>
+  </div>
+  <div id="chart"></div>
+<script>
+const data = [
+  { l: 'Explotación minera',      v: 4.5 },
+  { l: 'Manufactura alimenticia', v: 3.7 },
+  { l: 'Construcción',            v: 3.7 },
+  { l: 'Impuestos netos',         v: 3.5 },
+  { l: 'Financiero y seguros',    v: 3.1 },
+  { l: 'Agricultura',             v: 2.9 },
+  { l: 'Pesca y acuicultura',     v: 2.9 },
+  { l: 'Refinados petróleo',      v: 2.7 },
+  { l: 'Comercio',                v: 2.6 },
+  { l: 'Transporte',              v: 2.5 },
+  { l: 'Electricidad y agua',     v: 2.4 },
+  { l: 'Manufactura no-alim.',    v: 2.1 },
+  { l: 'Arte y entretenimiento',  v: 1.7 },
+  { l: 'Info. y comunicación',    v: 1.6 },
+  { l: 'Act. profesionales',      v: 1.5 },
+  { l: 'Admón. pública',          v: 1.5 },
+  { l: 'Inmobiliario',            v: 1.1 },
+  { l: 'Salud y asistencia',      v: 1.1 },
+  { l: 'Enseñanza',               v: 0.6 },
+  { l: 'Alojamiento y comidas',   v: 0.5 },
+  { l: 'Hogares empleadores',     v: 0.3 },
+];
+
+const MAX = 5.0;
+const container = document.getElementById('chart');
+
+data.forEach(d => {
+  const color = d.v >= 3.5 ? '#0F6E56' : d.v >= 2.0 ? '#1D9E75' : d.v >= 1.0 ? '#5DCAA5' : '#C8EDE4';
+  const valColor = d.v < 1.0 ? '#a0aec0' : '#0a4a35';
+  const pct = (d.v / MAX * 100).toFixed(1) + '%';
+
+  container.innerHTML += `
+    <div class="row">
+      <div class="sector-label" title="${d.l}">${d.l}</div>
+      <div class="bar-wrap">
+        <div class="bar" style="width:${pct}; background:${color};"></div>
+        <span class="val" style="color:${valColor};">${d.v.toFixed(1)}%</span>
+      </div>
+    </div>`;
+});
+</script>
+</body>
+</html>
