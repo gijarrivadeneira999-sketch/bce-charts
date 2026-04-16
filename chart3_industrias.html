@@ -10,7 +10,7 @@
   body { font-family: 'DM Sans', sans-serif; background: #ffffff; padding: 24px 28px 20px; }
   .label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #718096; margin-bottom: 4px; }
   .title { font-size: 15px; font-weight: 600; color: #0e1f35; margin-bottom: 2px; }
-  .sub { font-size: 12px; color: #a0aec0; margin-bottom: 20px; }
+  .sub { font-size: 12px; color: #a0aec0; margin-bottom: 16px; }
   .legend { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
   .leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #718096; }
   .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
@@ -18,39 +18,111 @@
 </head>
 <body>
   <div class="label">VAB por industria · 2026 (prev.)</div>
-  <div class="title">Tasa de crecimiento por industria</div>
+  <div class="title">Tasa de crecimiento por sector — ranking</div>
   <div class="sub">Variación anual real · Banco Central del Ecuador</div>
   <div class="legend">
-    <div class="leg-item"><div class="leg-dot" style="background:#0F6E56"></div>≥ 3.5%</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div>2.5% – 3.4%</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#5DCAA5"></div>1.5% – 2.4%</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#9FE1CB"></div>< 1.5%</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#0F6E56"></div>Alto dinamismo (≥ 3.5%)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div>Dinamismo medio (2%–3.4%)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#5DCAA5"></div>Bajo dinamismo (1%–1.9%)</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#C8EDE4"></div>Rezagado (< 1%)</div>
   </div>
-  <div style="position:relative;height:600px;">
-    <canvas id="c" role="img" aria-label="Crecimiento por industria 2026. Minería 4.5%, manufactura alimenticia y construcción 3.7%, financiero 3.1%. Rezagados: alojamiento 0.5%, hogares empleadores 0.3%.">Minería 4.5%, manufactura alimenticia 3.7%, construcción 3.7%, financiero 3.1%, impuestos 3.5%, refinados 2.7%, agro 2.9%, pesca 2.9%, comercio 2.6%, PIB 2.5%, transporte 2.5%, electricidad 2.4%, manufactura no-alim 2.1%, arte 1.7%, info 1.6%, profesionales 1.5%, admón pública 1.5%, inmobiliario 1.1%, salud 1.1%, enseñanza 0.6%, alojamiento 0.5%, hogares 0.3%.</canvas>
+  <div style="position:relative;height:620px;">
+    <canvas id="c" role="img" aria-label="Ranking de crecimiento por sector 2026. Minería 4.5%, manufactura alimenticia y construcción 3.7%, financiero 3.1%. Rezagados: alojamiento 0.5%, hogares empleadores 0.3%."></canvas>
   </div>
 <script>
-const labels = [
-  'Explotación minera','Manufactura alimenticia','Construcción',
-  'Financiero y seguros','Impuestos netos','Refinados petróleo',
-  'Agricultura','Pesca y acuicultura','Comercio',
-  'PIB Total','Transporte','Electricidad y agua',
-  'Manufactura no-alim.','Arte y entretenimiento','Info. y comunicación',
-  'Act. profesionales','Admón. pública','Inmobiliario',
-  'Salud y asistencia','Enseñanza','Alojamiento y comidas','Hogares empleadores'
+const sectores = [
+  { l: 'Explotación minera',      v: 4.5 },
+  { l: 'Manufactura alimenticia', v: 3.7 },
+  { l: 'Construcción',            v: 3.7 },
+  { l: 'Impuestos netos',         v: 3.5 },
+  { l: 'Financiero y seguros',    v: 3.1 },
+  { l: 'Agricultura',             v: 2.9 },
+  { l: 'Pesca y acuicultura',     v: 2.9 },
+  { l: 'Refinados petróleo',      v: 2.7 },
+  { l: 'Comercio',                v: 2.6 },
+  { l: 'Transporte',              v: 2.5 },
+  { l: 'Electricidad y agua',     v: 2.4 },
+  { l: 'Manufactura no-alim.',    v: 2.1 },
+  { l: 'Arte y entretenimiento',  v: 1.7 },
+  { l: 'Info. y comunicación',    v: 1.6 },
+  { l: 'Act. profesionales',      v: 1.5 },
+  { l: 'Admón. pública',          v: 1.5 },
+  { l: 'Inmobiliario',            v: 1.1 },
+  { l: 'Salud y asistencia',      v: 1.1 },
+  { l: 'Enseñanza',               v: 0.6 },
+  { l: 'Alojamiento y comidas',   v: 0.5 },
+  { l: 'Hogares empleadores',     v: 0.3 },
 ];
-const vals = [4.5,3.7,3.7,3.1,3.5,2.7,2.9,2.9,2.6,2.5,2.5,2.4,2.1,1.7,1.6,1.5,1.5,1.1,1.1,0.6,0.5,0.3];
-const colors = vals.map(v => v >= 3.5 ? '#0F6E56' : v >= 2.5 ? '#1D9E75' : v >= 1.5 ? '#5DCAA5' : '#9FE1CB');
+
+const colors = sectores.map(d =>
+  d.v >= 3.5 ? '#0F6E56' :
+  d.v >= 2.0 ? '#1D9E75' :
+  d.v >= 1.0 ? '#5DCAA5' :
+               '#C8EDE4'
+);
+
+const valueLabelPlugin = {
+  id: 'valueLabel',
+  afterDatasetsDraw(chart) {
+    const { ctx, scales: { x, y } } = chart;
+    ctx.save();
+    ctx.font = '500 11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    sectores.forEach((s, i) => {
+      const xPos = x.getPixelForValue(s.v);
+      const yPos = y.getPixelForValue(i);
+      ctx.fillStyle = s.v < 1.0 ? '#718096' : '#0a4a35';
+      ctx.fillText(s.v.toFixed(1) + '%', xPos + 6, yPos);
+    });
+    ctx.restore();
+  }
+};
 
 new Chart(document.getElementById('c'), {
-  type: 'bar', indexAxis: 'y',
-  data: { labels, datasets: [{ data: vals, backgroundColor: colors, borderRadius: 4, barPercentage: 0.65 }] },
+  type: 'bar',
+  indexAxis: 'y',
+  plugins: [valueLabelPlugin],
+  data: {
+    labels: sectores.map(d => d.l),
+    datasets: [{
+      data: sectores.map(d => d.v),
+      backgroundColor: colors,
+      borderRadius: 4,
+      barPercentage: 0.65
+    }]
+  },
   options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.x + '%' } } },
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { right: 48 } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => '  ' + ctx.parsed.x.toFixed(1) + '%'
+        }
+      }
+    },
     scales: {
-      x: { grid: { color: 'rgba(0,0,0,0.04)', borderDash: [4,4] }, ticks: { color: '#718096', font: { size: 11 }, callback: v => v + '%' }, min: 0, max: 5 },
-      y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#718096', font: { size: 11 }, autoSkip: false } }
+      x: {
+        min: 0,
+        max: 5.2,
+        grid: { color: 'rgba(0,0,0,0.04)', borderDash: [4, 4] },
+        ticks: {
+          color: '#718096',
+          font: { size: 11 },
+          callback: v => v + '%'
+        }
+      },
+      y: {
+        grid: { display: false },
+        ticks: {
+          color: '#4a5568',
+          font: { size: 11.5 },
+          autoSkip: false
+        }
+      }
     }
   }
 });
