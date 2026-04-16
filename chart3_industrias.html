@@ -26,8 +26,8 @@
     <div class="leg-item"><div class="leg-dot" style="background:#5DCAA5"></div>Bajo dinamismo (1%–1.9%)</div>
     <div class="leg-item"><div class="leg-dot" style="background:#C8EDE4"></div>Rezagado (< 1%)</div>
   </div>
-  <div style="position:relative;height:620px;">
-    <canvas id="c" role="img" aria-label="Ranking de crecimiento por sector 2026. Minería 4.5%, manufactura alimenticia y construcción 3.7%, financiero 3.1%. Rezagados: alojamiento 0.5%, hogares empleadores 0.3%."></canvas>
+  <div style="position:relative; height:660px;">
+    <canvas id="c"></canvas>
   </div>
 <script>
 const sectores = [
@@ -66,13 +66,13 @@ const valueLabelPlugin = {
   afterDatasetsDraw(chart) {
     const { ctx, scales: { x, y } } = chart;
     ctx.save();
-    ctx.font = '500 11px sans-serif';
+    ctx.font = '500 11px DM Sans, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     sectores.forEach((s, i) => {
       const xPos = x.getPixelForValue(s.v);
       const yPos = y.getPixelForValue(i);
-      ctx.fillStyle = s.v < 1.0 ? '#718096' : '#0a4a35';
+      ctx.fillStyle = s.v < 1.0 ? '#a0aec0' : '#0a4a35';
       ctx.fillText(s.v.toFixed(1) + '%', xPos + 6, yPos);
     });
     ctx.restore();
@@ -95,7 +95,7 @@ new Chart(document.getElementById('c'), {
   options: {
     responsive: true,
     maintainAspectRatio: false,
-    layout: { padding: { right: 48 } },
+    layout: { padding: { right: 50 } },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -107,7 +107,7 @@ new Chart(document.getElementById('c'), {
     scales: {
       x: {
         min: 0,
-        max: 5.2,
+        max: 5.5,
         grid: { color: 'rgba(0,0,0,0.04)', borderDash: [4, 4] },
         ticks: {
           color: '#718096',
@@ -119,8 +119,9 @@ new Chart(document.getElementById('c'), {
         grid: { display: false },
         ticks: {
           color: '#4a5568',
-          font: { size: 11.5 },
-          autoSkip: false
+          font: { size: 11 },
+          autoSkip: false,
+          crossAlign: 'far'
         }
       }
     }
